@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,10 +12,12 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text highscoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
+    public int m_highscore;
     
     private bool m_GameOver = false;
 
@@ -22,6 +25,17 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        m_highscore = 0;
+
+        if (SaveManager.instance.highscore != 0)
+        {
+            highscoreText.text = $"Best Score : {SaveManager.instance.highscoreName} : {SaveManager.instance.highscore}";
+        }
+        else
+        {
+            highscoreText.gameObject.SetActive(false);
+        }
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -55,9 +69,29 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            if (m_highscore < m_Points)
+            {
+                m_highscore = m_Points;
+            }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                if (SaveManager.instance.highscore < m_highscore)
+                {
+                    SaveManager.instance.SaveScore(SaveManager.instance.username, m_highscore);
+                    SaveManager.instance.SaveInfo();
+                }
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (SaveManager.instance.highscore < m_highscore)
+                {
+                    SaveManager.instance.SaveScore(SaveManager.instance.username, m_highscore);
+                    SaveManager.instance.SaveInfo();
+                }
+                SceneManager.LoadScene(0);
             }
         }
     }
