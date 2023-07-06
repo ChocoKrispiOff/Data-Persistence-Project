@@ -10,6 +10,7 @@ public class SaveManager : MonoBehaviour
     public string username;
     public string highscoreName;
     public int highscore;
+    public Material brickColor;
 
     private void Awake()
     {
@@ -36,6 +37,7 @@ public class SaveManager : MonoBehaviour
         SystemSave data = new SystemSave();
         data.highscore = highscore;
         data.highscoreName = highscoreName;
+        data.brickColor = brickColor.color;
         string json = JsonUtility.ToJson(data);
 
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
@@ -52,6 +54,7 @@ public class SaveManager : MonoBehaviour
 
             highscore = data.highscore;
             highscoreName = data.highscoreName;
+            brickColor.color = data.brickColor;
         }
     }
 }
@@ -61,4 +64,5 @@ class SystemSave
 {
     public string highscoreName;
     public int highscore;
+    public Color brickColor;
 }
